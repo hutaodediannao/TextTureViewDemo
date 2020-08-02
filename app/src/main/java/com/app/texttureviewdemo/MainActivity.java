@@ -20,10 +20,9 @@ import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity implements TextureView.SurfaceTextureListener {
 
-    private MediaPlayer mMediaPlayer, mMediaPlayer2;
-    private Surface surface, surface2;
-    private ImageView videoImage;
-    private TextureView textureView, textureview2;
+    private MediaPlayer mMediaPlayer, mMediaPlayer2, mMediaPlayer3, mMediaPlayer4;
+    private Surface surface, surface2, surface3, surface4;
+    private TextureView textureView, textureview2, textureview3, textureview4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +31,9 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
 
         textureView = findViewById(R.id.textureview);
         textureview2 = findViewById(R.id.textureview2);
-//        videoImage = findViewById(R.id.video_image);
+        textureview3 = findViewById(R.id.textureview3);
+        textureview4 = findViewById(R.id.textureview4);
+
         textureView.setSurfaceTextureListener(this);//设置监听函数  重写4个方法
         textureview2.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
@@ -59,7 +60,59 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
             public void onSurfaceTextureUpdated(SurfaceTexture surface) {
 
             }
-        });//设置监听函数  重写4个方法
+        });
+        textureview3.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+            @Override
+            public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+                surface3 = new Surface(surface);
+                new PlayerVideo3().start();//开启一个线程去播放视频
+            }
+
+            @Override
+            public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+
+            }
+
+            @Override
+            public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+                surface = null;
+                surface3 = null;
+                mMediaPlayer3.stop();
+                mMediaPlayer3.release();
+                return true;
+            }
+
+            @Override
+            public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+            }
+        });
+        textureview4.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+            @Override
+            public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+                surface4 = new Surface(surface);
+                new PlayerVideo4().start();//开启一个线程去播放视频
+            }
+
+            @Override
+            public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+
+            }
+
+            @Override
+            public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+                surface = null;
+                surface4 = null;
+                mMediaPlayer4.stop();
+                mMediaPlayer4.release();
+                return true;
+            }
+
+            @Override
+            public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+            }
+        });
     }
 
     @Override
@@ -98,8 +151,9 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
                     copyFile();
                 }
                 mMediaPlayer = new MediaPlayer();
+                mMediaPlayer.setVolume(0, 0);
                 //在线播放
-                String videoUrl = "https://video.pearvideo.com/mp4/adshort/20200731/cont-1689163-15298530_adpkg-ad_hd.mp4";
+                String videoUrl = "https://video.pearvideo.com/mp4/third/20200731/cont-1689202-10163759-145056-hd.mp4";
                 mMediaPlayer.setDataSource(videoUrl);
 
 //                mMediaPlayer.setDataSource(file.getAbsolutePath());
@@ -128,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
                     copyFile();
                 }
                 mMediaPlayer2 = new MediaPlayer();
+                mMediaPlayer2.setVolume(0, 0);
                 mMediaPlayer2.setDataSource(file.getAbsolutePath());
                 mMediaPlayer2.setSurface(surface2);
                 mMediaPlayer2.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -138,6 +193,52 @@ public class MainActivity extends AppCompatActivity implements TextureView.Surfa
                     }
                 });
                 mMediaPlayer2.prepare();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class PlayerVideo3 extends Thread {
+        @Override
+        public void run() {
+            try {
+                String videoUrl = "https://video.pearvideo.com/mp4/third/20200731/cont-1689193-12825697-143136-hd.mp4";
+                mMediaPlayer3 = new MediaPlayer();
+                mMediaPlayer3.setVolume(0, 0);
+                mMediaPlayer3.setDataSource(videoUrl);
+                mMediaPlayer3.setSurface(surface3);
+                mMediaPlayer3.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                mMediaPlayer3.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        mMediaPlayer3.start();
+                    }
+                });
+                mMediaPlayer3.prepare();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class PlayerVideo4 extends Thread {
+        @Override
+        public void run() {
+            try {
+                String videoUrl = "https://video.pearvideo.com/mp4/short/20200801/cont-1680683-15300358-hd.mp4";
+                mMediaPlayer4 = new MediaPlayer();
+                mMediaPlayer4.setVolume(0, 0);
+                mMediaPlayer4.setDataSource(videoUrl);
+                mMediaPlayer4.setSurface(surface4);
+                mMediaPlayer4.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                mMediaPlayer4.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        mMediaPlayer4.start();
+                    }
+                });
+                mMediaPlayer4.prepare();
             } catch (Exception e) {
                 e.printStackTrace();
             }
